@@ -1,0 +1,161 @@
+====================================
+     Lua backend for PowerDNS!
+====================================
+
+
+http://www.lua.org for more information about Lua.
+
+
+This backend is just a "glue" between PowerDNS and your own Lua application.
+
+What this means is that you can not have a working setup that can serve you
+dns-questions directly from start. What you can and need's to do is to 
+program your own backend by yourself completely in Lua!
+
+What you have here is the possibility to make your own "dns-server" without the
+knowledge of programming in c/c++.
+
+All the functionnames that PowerDNS accept for a backend should be the same
+in your Lua script, in lowercase. Also, the parameters should be in the same 
+order. Where there is a structure in c/c++ there is a table in the Lua backend.
+This is also true for return values. A few functions expect that you return a 
+table in a table.
+
+
+
+=============
+NEW FUNCTIONS
+=============
+
+There is a couple of new functions for you to use in your Lua script:
+
+-----------------------------------------------
+logger(log_facility, "your", "messages", "...")
+-----------------------------------------------
+
+All these log_facilities is available:
+
+log_all, log_ntlog, log_alert, log_critical, 
+log_error, log_warning, log_notice, log_info, 
+log_debug, log_none
+
+
+------------------------------------
+string, number, string = dnspacket()
+------------------------------------
+
+This will give you back three parameters with
+remote_ip, remote_port and local_ip in that order.
+
+Can only be used in the functions list(), lookup() and getsoa().
+
+
+-------------------------------------------
+string = getarg("parameter-from-pdns.conf")
+-------------------------------------------
+
+This one tries to get a string value of the key from the pdns.conf file.
+
+
+--------------------------------------------
+boolean = mustdo("parameter-from-pdns.conf")
+--------------------------------------------
+
+This is the same as getarg() but return a boolean instead of a string.
+
+
+------
+QTypes
+------
+
+You have all the different QTypes from qtypes.hh in a table called 'QTypes'.
+
+
+
+====================
+WHAT HAS BEEN TESTED
+====================
+
+The functionality of the minimal backend works including zone-transfer.
+
+With the included luafile 'powerdns-luabackend.lua' there is an example 
+of how this can be done. Note that this is a static example without any kind 
+of a database since it's using a table as storage.
+
+
+
+===========================================
+WHAT YOU WILL FIND UNDER THE TEST DIRECTORY
+===========================================
+
+The script 'pdns' is used to test the server on the ip address '127.0.0.1' with
+the port 5300. This assume that you have compile pdns with something like:
+
+./configure --with-modules="" --with-dynmodules="lua"
+
+OBS! You can only use the same version of Lua as PowerDNS itself is using!
+
+
+=============================
+OPTIONS IN THE CONFIGURE FILE
+=============================
+
+The default values are:
+
+lua-filename = "powerdns-luabackend.lua"
+lua-query-logging = no
+lua-commandline = ""
+lua-f_exec_error = ""
+
+
+
+==============================
+YOUR OWN ERROR FUNCTION IN LUA
+==============================
+
+You can have an error function in Lua when Lua gives back a error.
+
+First make your error function then you put this in pdns.conf:
+
+lua-f_exec_error = <your_name_of_the_error_function_in_lua>
+
+
+
+======
+DNSSEC
+======
+
+You can have full dnssec support in our Lua application. You should note the 
+following regarding this:
+
+You don't have to implement the function 'updateDNSSECOrderAndAuth' since the 
+default code will work correctly for you via the backend itself. 
+
+The functions activateDomainKey and deactivateDomainKey can be implemented via a 
+new function called updateDomainKey, which has three parameters (the other two 
+has only two parameters) where the third is a boolean which is true or false 
+depending on which function that was called from the beginning.
+
+
+
+=======================
+INFORMATION FOR LOGGING
+=======================
+
+If you have the parameter 'query-logging' or 'lua-query-logging' set to 
+true/yes/on in your pdns.conf, then you will see what is happening in each function 
+when PowerDNS calls them. 
+
+This can, hopefully, help you with some debugging if you run into some kind of 
+trouble with your Lua application.
+
+
+===============
+ASKING QUESTION
+===============
+
+You can send question about this backend to >dev/null first and if you don't get any 
+answer from that you can try to send them to me at fredan-pdns@fredan.org
+Please add Lubackend somewhere in your subject.
+
+Fredrik Danerklint.
