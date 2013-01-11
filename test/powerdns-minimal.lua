@@ -152,6 +152,9 @@ function get()
                 madecopy = true
                 result["prefix"] = nil
 
+                local stop = result["stop"] ~= nil and result["stop"]
+                result["stop"] = nil
+
                 if result["qba"] then
                     if logging then logger(log_info, "(l_get) Prefix - question before answer") end
                     result["content"] = q_name .. "." .. value[1]["content"]
@@ -174,8 +177,12 @@ function get()
                         end
                     end
                     nofr = nofr + (#value - 1)
-                    if logging then logger(log_info, "(l_get) Prefix - Got", #value, "records in the answer for the prefix. Number of records is now:", nofr, "(including this record to be served)") end
                 end
+
+                --we don't continue with the remaining records if stop is true
+                if stop then nofr = nofr - (#value + 1) end
+
+                if logging then logger(log_info, "(l_get) Prefix - Got", #value, "records in the answer for this prefix. Number of records is now:", nofr, "(including this record to be served) stop is:", stop) end
 
                 --now we continue with this record...
                 break

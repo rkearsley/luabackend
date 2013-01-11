@@ -31,6 +31,10 @@ lua_prefixes.*.
 For more information of how to use this in Lua, see the comment 
 in the beginning of the file lua_prefixes.cc.
 
+If you are using prefixes then make sure that you don't use of any 
+packetcache in PowerDNS at all! Your results will otherwise get
+mixed up with each other.
+
 
 ==========================
 TLMC - The Last Mile Cache
@@ -44,7 +48,4 @@ test/Modes/* for more.
 
 For more information about what TLMC is, please visit
 http://tlmc.fredan.se/
-
-
-
 
