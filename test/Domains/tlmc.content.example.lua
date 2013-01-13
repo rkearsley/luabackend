@@ -41,7 +41,7 @@ domains["tlmc.content.example"] = {
             {type = "PREFIX", qba = false, prefix = prefix},
             {type = "PREFIX", qba = true, prefix = prefix2, stop = true},
             --If stop is true and we found a prefix then we don't continue to go thru
-            --the remaining records. This is so you can use remaining records as a default
+            --the remaining records. This is so you can use the remaining records as a default
             --values if you don't find a prefix.
             {type = "A", ttl = ttl4, content = "192.0.2.18"},
             {type = "AAAA", ttl = ttl6, content = "2001:0db8::18"}

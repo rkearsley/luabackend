@@ -10,7 +10,7 @@ local logger = logger
 local log_info = log_info
 local dnspacket = dnspacket
 
-local remote_ip, remote_port, local_ip
+local remote_ip, remote_port, local_ip, realremote_ip
 
 local res = {}
 
@@ -79,8 +79,8 @@ function lookup(qtype, qname, domain_id)
     counter = 0
     nofr = 0
 
-    remote_ip, remote_port, local_ip = dnspacket()
-    if logging then logger(log_info, "(l_lookup) dnspacket - remote:", remote_ip, " port:", remote_port, " local:", local_ip) end
+    remote_ip, remote_port, local_ip, realremote_ip = dnspacket()
+    if logging then logger(log_info, "(l_lookup) dnspacket - remote:", remote_ip, " port:", remote_port, " local:", local_ip, " realremote:", realremote_ip) end
 
     if domain_soa["domain_id"] == domain_id then
         local k,v
@@ -234,8 +234,8 @@ end
 function getsoa(name)
     if logging then logger(log_info, "(l_getsoa) BEGIN name:", name) end
 
-    remote_ip, remote_port, local_ip = dnspacket()
-    if logging then logger(log_info, "(l_getsoa) dnspacket - remote:", remote_ip, " port:", remote_port, " local:", local_ip) end
+    remote_ip, remote_port, local_ip, realremote_ip = dnspacket()
+    if logging then logger(log_info, "(l_getsoa) dnspacket - remote:", remote_ip, " port:", remote_port, " local:", local_ip, " realremote:", realremote_ip) end
 
     domain_soa = domains[name]
 

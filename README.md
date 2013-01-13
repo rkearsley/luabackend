@@ -26,7 +26,7 @@ Both IPv4 and IPv6. IPv6 can only be used with a netmask
 of 64 or lower.
 
 If you want this in your application, you only need the files
-lua_prefixes.*.
+lua_prefixes.cc, lua_prefixes.hh and lua_getvaluefromtable.hh.
 
 For more information of how to use this in Lua, see the comment 
 in the beginning of the file lua_prefixes.cc.

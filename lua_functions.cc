@@ -112,8 +112,9 @@ int l_dnspacket (lua_State *lua) {
     lua_pushstring(lua, lb->dnspacket->getRemote().c_str());
     lua_pushnumber(lua, lb->dnspacket->getRemotePort());
     lua_pushstring(lua, lb->dnspacket->getLocal().c_str());
+    lua_pushstring(lua, lb->dnspacket->getRealRemote().toString().c_str());
 
-    return 3;
+    return 4;
 }
 
 #include <libgen.h>

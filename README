@@ -40,14 +40,17 @@ log_error, log_warning, log_notice, log_info,
 log_debug, log_none
 
 
-------------------------------------
-string, number, string = dnspacket()
-------------------------------------
+--------------------------------------------
+string, number, string, string = dnspacket()
+--------------------------------------------
 
-This will give you back three parameters with
-remote_ip, remote_port and local_ip in that order.
+This will give you back four parameters with:
 
-Can only be used in the functions list(), lookup() and getsoa().
+remote_ip, remote_port, local_ip and realremote_ip 
+
+in that order.
+
+Can only be used in the functions lookup() and getsoa().
 
 
 -------------------------------------------
