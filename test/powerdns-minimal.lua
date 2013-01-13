@@ -92,24 +92,41 @@ function lookup(qtype, qname, domain_id)
             --This is to handle The Last Mile Cache for a ISP.
             local qname_len = qname:len()
             local myname_size = domain_soa["tlmc"]["myname"]:len()
-            local question = stringsub(qname, qname_len - myname_size + 1)
+            local tlmc_domain = qname:sub(qname_len - myname_size + 1)
 
-            if logging then logger(log_info, "(l_lookup) TLMC", question) end
+            if logging then logger(log_info, "(l_lookup) TLMC for", tlmc_domain, res) end
 
-            if (qname_len >= myname_size) and (question == domain_soa["tlmc"]["myname"]) then 
+            if (qname_len >= myname_size) and (tlmc_domain == domain_soa["tlmc"]["myname"]) then 
                 if (qname == domain_soa["tlmc"]["myname"]) then
                     res = deepcopy(domain_soa["r"][qname])
                     if logging then logger(log_info, "(l_lookup) TLMC question for myname") end
                 elseif domain_soa["r"][qname] ~= nil then
                     res = deepcopy(domain_soa["r"][qname])
-                    if logging then logger(log_info, "(l_lookup) TLMC already found the answer") end
+                    if logging then logger(log_info, "(l_lookup) TLMC answer exists in records table") end
                 elseif domain_soa["tlmc"]["mode"] == 1 then
-                    res = deepcopy(domain_soa["tlmc"]["online"])
-                    if logging then logger(log_info, "(l_lookup) TLMC giveing online answer") end
+                    if (qname_len - myname_size - 1) == 24 then
+                        local hash_string = qname:sub(1, 24)
+                        --can be a hash request. if it is, it should be all hex values....
+                        --this is a negativ search to figure that out. 
+                        local h = hash_string:match("[g-z%c%p%s]")
+                        if h == nil then
+                            local hash_host_path = qname:sub(1, 16)
+                            local hash_host = qname:sub(17, 24)
+                            --here should be a better method for looking up the hash value.
+                            --for now on, this is it. this is only used when a request comes
+                            --from a cache server.
+                            res = deepcopy(domain_soa["tlmc"]["hash"])
+                            if logging then logger(log_info, "(l_lookup) TLMC Hash Request. hostpath:", hash_host_path, " host:", hash_host) end
+                        end
+                    end
+                    if #res == 0 then
+                        res = deepcopy(domain_soa["tlmc"]["online"])
+                        if logging then logger(log_info, "(l_lookup) TLMC giveing online answer") end
+                    end
                 else
                     res = deepcopy(domain_soa["tlmc"]["offline"])
                     res[1]["name"] = qname
-                    res[1]["content"] = domain_soa["tlmc"]["mylocation"] .. "." .. stringsub(qname, 1, (qname_len - myname_size - 1))
+                    res[1]["content"] = domain_soa["tlmc"]["mylocation"] .. "." .. qname:sub(1, (qname_len - myname_size - 1))
                     if logging then logger(log_info, "(l_lookup) TLMC giveing offline answer") end
                 end
             end

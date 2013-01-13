@@ -37,6 +37,13 @@ domains["tlmc.isp.example"] = {
             {type = "A", ttl = 90, content = "192.0.2.187"},
             {type = "AAAA", ttl = 90, content = "2001:0db8::718c:718c"}
         },
+        ["hash"] = {
+            --This record is used when we don't find a record for the hash
+            --asked. Can not and must not be the same as provided with the
+            --"online" answer above.
+            {type = "A", ttl = 600, content = "192.0.2.201"},
+            {type = "AAAA", ttl = 600, content = "2001:0db8::201"}
+        },
     },
     r = {
         ["tlmc.isp.example"] = {
