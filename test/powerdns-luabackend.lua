@@ -21,8 +21,8 @@ end
 
 function rediscover()
     local k,v
-    for k,v in pairs(tlmc_mode_files) do
-        if logging then logger(log_info, "Reloading TLMC Mode file:", v) end
+    for k,v in pairs(user_files_to_rediscover) do
+        if logging then logger(log_info, "(l_rediscover) Loading file:", v) end
         loadme(v)
     end
 end
@@ -40,8 +40,8 @@ function reload()
     loadme(file)
 
     local k,v
-    for k,v in pairs(user_files_to_load) do
-        if logging then logger(log_info, "Loading user-file:", v) end
+    for k,v in pairs(user_files_to_reload) do
+        if logging then logger(log_info, "(l_reload) Loading file:", v) end
         loadme(v)
     end
 

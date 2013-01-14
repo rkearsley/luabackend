@@ -41,10 +41,11 @@ TLMC - The Last Mile Cache
 ==========================
 
 This also contains all the code for running TLMC
-either for a content provider or an ISP.
+either for a Content Service Provider (csp) or as an 
+Internet Service Provider (isp).
 
 Please see test/Domains/tlmc.*.example.lua and 
-test/Modes/* for more.
+test/Rediscover/* for more.
 
 For more information about what TLMC is, please visit
 http://tlmc.fredan.se/

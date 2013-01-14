@@ -94,9 +94,13 @@ function lookup(qtype, qname, domain_id)
             local myname_size = domain_soa["tlmc"]["myname"]:len()
             local tlmc_domain = qname:sub(qname_len - myname_size + 1)
 
-            if logging then logger(log_info, "(l_lookup) TLMC for", tlmc_domain, res) end
+            if logging then logger(log_info, "(l_lookup) TLMC for", tlmc_domain) end
 
             if (qname_len >= myname_size) and (tlmc_domain == domain_soa["tlmc"]["myname"]) then 
+                --we assume that we have found an answer...
+                local res_set = true
+                local hostname = qname:sub(1, (qname_len - myname_size - 1))
+
                 if (qname == domain_soa["tlmc"]["myname"]) then
                     res = deepcopy(domain_soa["r"][qname])
                     if logging then logger(log_info, "(l_lookup) TLMC question for myname") end
@@ -104,7 +108,10 @@ function lookup(qtype, qname, domain_id)
                     res = deepcopy(domain_soa["r"][qname])
                     if logging then logger(log_info, "(l_lookup) TLMC answer exists in records table") end
                 elseif domain_soa["tlmc"]["mode"] == 1 then
-                    if (qname_len - myname_size - 1) == 24 then
+                    if domain_soa["tlmc"]["blacklist"] ~= nil then
+                        res_set = domain_soa["tlmc"]["blacklist"][hostname] == nil
+                        if logging and not(res_set) then logger(log_info, "(l_lookup) TLMC", hostname, "is blacklisted") end
+                    elseif (qname_len - myname_size - 1) == 24 then
                         local hash_string = qname:sub(1, 24)
                         --can be a hash request. if it is, it should be all hex values....
                         --this is a negativ search to figure that out. 
@@ -112,21 +119,25 @@ function lookup(qtype, qname, domain_id)
                         if h == nil then
                             local hash_host_path = qname:sub(1, 16)
                             local hash_host = qname:sub(17, 24)
-                            --here should be a better method for looking up the hash value.
+                            --here should be a much better method for looking up the hash value.
                             --for now on, this is it. this is only used when a request comes
                             --from a cache server.
                             res = deepcopy(domain_soa["tlmc"]["hash"])
                             if logging then logger(log_info, "(l_lookup) TLMC Hash Request. hostpath:", hash_host_path, " host:", hash_host) end
                         end
                     end
-                    if #res == 0 then
+                    if #res == 0 and res_set then
                         res = deepcopy(domain_soa["tlmc"]["online"])
                         if logging then logger(log_info, "(l_lookup) TLMC giveing online answer") end
                     end
                 else
+                    res_set = false
+                end
+
+                if not(res_set) then
                     res = deepcopy(domain_soa["tlmc"]["offline"])
                     res[1]["name"] = qname
-                    res[1]["content"] = domain_soa["tlmc"]["mylocation"] .. "." .. qname:sub(1, (qname_len - myname_size - 1))
+                    res[1]["content"] = domain_soa["tlmc"]["mylocation"] .. "." .. hostname
                     if logging then logger(log_info, "(l_lookup) TLMC giveing offline answer") end
                 end
             end

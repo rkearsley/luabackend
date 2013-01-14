@@ -9,9 +9,9 @@ dig axfr 2.0.192.in-addr.arpa -p 5300 @127.0.0.1
 dig axfr test2.example -p 5300 @127.0.0.1
 dig axfr 8.b.d.0.1.0.0.2.ip6.arpa -p 5300 @127.0.0.1
 
-dig any static.tlmc.content.example -p 5300 @127.0.0.1
+dig any static.tlmc.csp.example -p 5300 @127.0.0.1
 #TLMC. ONLINE MODE:
-#; <<>> DiG 9.8.1-P1 <<>> any static.tlmc.content.example -p 5300 @127.0.0.1
+#; <<>> DiG 9.8.1-P1 <<>> any static.tlmc.csp.example -p 5300 @127.0.0.1
 #;; global options: +cmd
 #;; Got answer:
 #;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 19622
@@ -19,15 +19,15 @@ dig any static.tlmc.content.example -p 5300 @127.0.0.1
 #;; WARNING: recursion requested but not available
 #
 #;; QUESTION SECTION:
-#;static.tlmc.content.example.   IN      ANY
+#;static.tlmc.csp.example.   IN      ANY
 #
 #;; ANSWER SECTION:
-#static.tlmc.content.example. 1234 IN    CNAME   static.tlmc.content.example.tlmc.isp.example.
-#static.tlmc.content.example.tlmc.isp.example. 90 IN A 192.0.2.187
-#static.tlmc.content.example.tlmc.isp.example. 90 IN AAAA 2001:db8::718c:718c
+#static.tlmc.csp.example. 1234 IN    CNAME   static.tlmc.csp.example.tlmc.isp.example.
+#static.tlmc.csp.example.tlmc.isp.example. 90 IN A 192.0.2.187
+#static.tlmc.csp.example.tlmc.isp.example. 90 IN AAAA 2001:db8::718c:718c
 
 #TLMC. OFFLINE MODE:
-#; <<>> DiG 9.8.1-P1 <<>> any static.tlmc.content.example -p 5300 @127.0.0.1
+#; <<>> DiG 9.8.1-P1 <<>> any static.tlmc.csp.example -p 5300 @127.0.0.1
 #;; global options: +cmd
 #;; Got answer:
 #;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 18910
@@ -35,13 +35,13 @@ dig any static.tlmc.content.example -p 5300 @127.0.0.1
 #;; WARNING: recursion requested but not available
 #
 #;; QUESTION SECTION:
-#;static.tlmc.content.example.   IN      ANY
+#;static.tlmc.csp.example.   IN      ANY
 #
 #;; ANSWER SECTION:
-#static.tlmc.content.example. 1234 IN    CNAME   static.tlmc.content.example.tlmc.isp.example.
-#static.tlmc.content.example.tlmc.isp.example. 180 IN CNAME kaa.k.se.static.tlmc.content.example.
-#kaa.k.se.static.tlmc.content.example. 4040 IN A 192.0.2.20
-#kaa.k.se.static.tlmc.content.example. 6060 IN AAAA 2001:db8::20
+#static.tlmc.csp.example. 1234 IN    CNAME   static.tlmc.csp.example.tlmc.isp.example.
+#static.tlmc.csp.example.tlmc.isp.example. 180 IN CNAME kaa.k.se.static.tlmc.csp.example.
+#kaa.k.se.static.tlmc.csp.example. 4040 IN A 192.0.2.20
+#kaa.k.se.static.tlmc.csp.example. 6060 IN AAAA 2001:db8::20
 
 #Please remember that both these domains are hosted in the same instance of PowerDNS!
 #That's why you get A and AAAA as answer, since PowerDNS can look it up.
