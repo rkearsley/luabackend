@@ -420,7 +420,6 @@ bool LUABackend::getDomainKeys(const string& name, unsigned int kind, std::vecto
 
     lua_pushnil(lua);
 
-    int key;
     int j = 0;
 
     while (lua_next(lua, -2)) {
@@ -441,7 +440,7 @@ bool LUABackend::getDomainKeys(const string& name, unsigned int kind, std::vecto
         }
 
         lua_pop(lua,1);
-        key = lua_tonumber(lua, -1);
+        int key __attribute__((unused)) = lua_tonumber(lua, -1);
     }
 
     if(logging)
@@ -580,7 +579,6 @@ bool LUABackend::getDomainMetadata(const string& name, const std::string& kind, 
 
     lua_pushnil(lua);
 
-    int key;
     int j = 0;
 
     while (lua_next(lua, -2) != 0) {
@@ -591,7 +589,7 @@ bool LUABackend::getDomainMetadata(const string& name, const std::string& kind, 
         }
 
         lua_pop(lua,1);
-        key = lua_tonumber(lua, -1);
+        int key __attribute__((unused)) = lua_tonumber(lua, -1);
     }
 
     if(logging)
@@ -633,7 +631,6 @@ void LUABackend::alsoNotifies(const string &domain, set<string> *ips) {
 
     lua_pushnil(lua);
 
-    int key;
     int j = 0;
 
     while (lua_next(lua, -2)) {
@@ -644,7 +641,7 @@ void LUABackend::alsoNotifies(const string &domain, set<string> *ips) {
         }
 
         lua_pop(lua,1);
-        key = lua_tonumber(lua, -1);
+        int key __attribute__((unused)) = lua_tonumber(lua, -1);
     }
 
     if(logging)

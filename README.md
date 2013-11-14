@@ -1,6 +1,6 @@
-==========
-Luabackend
-==========
+============
+ Luabackend
+============
 
 Luabackend for PowerDNS.
 
@@ -15,9 +15,9 @@ which PowerDNS itself is using!
 See README for more information.
 
 
-============
-Lua Prefixes
-============
+==============
+ Lua Prefixes
+==============
 
 This also contain the module for Lua called Prefixes.
 
@@ -36,17 +36,17 @@ packetcache in PowerDNS at all! Your results will otherwise get
 mixed up with each other.
 
 
-==========================
-TLMC - The Last Mile Cache
-==========================
+=================================================
+ TOECDN - The Open Edge Content Delivery Network
+=================================================
 
-This also contains all the code for running TLMC
+This also contains all the code for running TOECDN
 either for a Content Service Provider (csp) or as an 
 Internet Service Provider (isp).
 
-Please see test/Domains/tlmc.*.example.lua and 
+Please see test/Domains/toecdn.*.example.lua and 
 test/Rediscover/* for more.
 
-For more information about what TLMC is, please visit
-http://tlmc.fredan.se/
+For more information about what TOECDN is, please visit
+http://www.toecdn.org/
 

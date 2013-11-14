@@ -3,12 +3,12 @@ local ttl6 = 6064
 
 local tfad = 86400
 
-domains["tlmc.isp.example"] = { 
+domains["toecdn.isp.example"] = { 
     domain_id = 16,
     type = "NATIVE",
     soa = {
-        hostmaster = "hostmaster.tlmc.isp.example",
-        nameserver = "ns11.tlmc.isp.example",
+        hostmaster = "hostmaster.toecdn.isp.example",
+        nameserver = "ns11.toecdn.isp.example",
         serial = 2012121242,
         refresh = 28800,
         retry = 7200,
@@ -16,39 +16,32 @@ domains["tlmc.isp.example"] = {
         default_ttl = 86400,
         ttl = 3600
     },
-    --The Last Mile Cache.
-    tlmc = {
+    --The Open Edge Content Delivery Network.
+    toecdn = {
         --If mode is 1 then we are in online mode. 0 is offline mode.
-        --See Modes/tlmc.isp.example.lua for more.
+        --See Redicover/toecdn.isp.example.lua for more.
         ["mode"] = 0,
-        --mylocation is UN Locode as described in the specification of The Last Mile Cache.
-        --More information about this can be found http://tlmc.fredan.se/
+        --mylocation is UN Locode as described in the specification of The Open Edge Content Delivery Network.
+        --More information about this can be found http://toecdn.fredan.se/
         ["mylocation"] = "kaa.k.se",
-        ["myname"] = "tlmc.isp.example",
+        ["myname"] = "toecdn.isp.example",
         --In offline mode we answer with mylocation + question without myname.
-        --Example; answer to the question 'static.tlmc.content.example.tlmc.isp.example':
-        --static.tlmc.content.example.tlmc.isp.example 180 IN CNAME kaa.k.se.static.tlmc.content.example
+        --Example; answer to the question 'static.toecdn.content.example.toecdn.isp.example':
+        --static.toecdn.content.example.toecdn.isp.example 180 IN CNAME kaa.k.se.static.toecdn.content.example
         ["offline"] = {
             {type = "CNAME", ttl = 180}
         },
-        --In online mode we answer with these records for question to '*.tlmc.isp.example'
+        --In online mode we answer with these records for question to '*.toecdn.isp.example'
         --Should be an anycast address to the cache server at the ISP.
         ["online"] = {
             {type = "A", ttl = 90, content = "192.0.2.187"},
             {type = "AAAA", ttl = 90, content = "2001:0db8::718c:718c"}
         },
-        ["hash"] = {
-            --This record is used when we don't find a record for the hash
-            --asked. Can not and must not be the same as provided with the
-            --"online" answer above.
-            {type = "A", ttl = 600, content = "192.0.2.201"},
-            {type = "AAAA", ttl = 600, content = "2001:0db8::201"}
-        },
     },
     r = {
-        ["tlmc.isp.example"] = {
-            {type = "NS", ttl = tfad, content = "ns11.tlmc.isp.example"},
-            {type = "NS", ttl = tfad, content = "ns12.tlmc.isp.example"},
+        ["toecdn.isp.example"] = {
+            {type = "NS", ttl = tfad, content = "ns11.toecdn.isp.example"},
+            {type = "NS", ttl = tfad, content = "ns12.toecdn.isp.example"},
 
             {type = "A", ttl = ttl4, content = "192.0.2.34"},
             {type = "AAAA", ttl = ttl6, content = "2001:0db8::34"},
@@ -63,11 +56,11 @@ domains["tlmc.isp.example"] = {
             {type = "TXT", ttl = tfad, content = "192.0.2.64/32"},
             {type = "TXT", ttl = tfad, content = "2001:0db8::718c:0264/128"},
         },
-        ["ns11.tlmc.isp.example"] = {
+        ["ns11.toecdn.isp.example"] = {
             {type = "A", ttl = ttl4, content = "192.0.2.32"},
             {type = "AAAA", ttl = ttl6, content = "2001:0db8::32"}
         },
-        ["ns12.tlmc.isp.example"] = {
+        ["ns12.toecdn.isp.example"] = {
             {type = "A", ttl = ttl4, content = "192.0.2.33"},
             {type = "AAAA", ttl = ttl6, content = "2001:0db8::33"}
         },

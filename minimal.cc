@@ -84,8 +84,6 @@ LUABackend::LUABackend(const string &suffix) {
 
     setArgPrefix("lua" + suffix);
 
-    try {
-
     // Make sure only one (the first) backend instance is initializing static things
     Lock l(&lock_the_lock);
 
@@ -104,13 +102,6 @@ LUABackend::LUABackend(const string &suffix) {
 
     //see lua_functions.cc
     init(&lua);
-
-    }
-
-    catch(LUAException &e) {
-        L << Logger::Error << backend_name << "Error: " << e.what << endl;
-        throw AhuException(e.what);
-    }
 }
 
 LUABackend::~LUABackend() {

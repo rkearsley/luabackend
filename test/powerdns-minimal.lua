@@ -84,61 +84,48 @@ function lookup(qtype, qname, domain_id)
 
     if domain_soa["domain_id"] == domain_id then
         local k,v
-        if domain_soa["tlmc"] == nil then
+        if domain_soa["toecdn"] == nil then
             if domain_soa["r"][qname] ~= nil then
                 res = deepcopy(domain_soa["r"][qname])
             end
         else
-            --This is to handle The Last Mile Cache for a ISP.
+            --This is to handle The Open Edge Content Delivery Network for an ISP.
             local qname_len = qname:len()
-            local myname_size = domain_soa["tlmc"]["myname"]:len()
-            local tlmc_domain = qname:sub(qname_len - myname_size + 1)
+            local myname_size = domain_soa["toecdn"]["myname"]:len()
+            local toecdn_domain = qname:sub(qname_len - myname_size + 1)
 
-            if logging then logger(log_info, "(l_lookup) TLMC for", tlmc_domain) end
+            if logging then logger(log_info, "(l_lookup) toecdn for", toecdn_domain) end
 
-            if (qname_len >= myname_size) and (tlmc_domain == domain_soa["tlmc"]["myname"]) then 
+            if (qname_len >= myname_size) and (toecdn_domain == domain_soa["toecdn"]["myname"]) then 
                 --we assume that we have found an answer...
                 local res_set = true
                 local hostname = qname:sub(1, (qname_len - myname_size - 1))
 
-                if (qname == domain_soa["tlmc"]["myname"]) then
+                if (qname == domain_soa["toecdn"]["myname"]) then
                     res = deepcopy(domain_soa["r"][qname])
-                    if logging then logger(log_info, "(l_lookup) TLMC question for myname") end
+                    if logging then logger(log_info, "(l_lookup) toecdn question for myname") end
                 elseif domain_soa["r"][qname] ~= nil then
                     res = deepcopy(domain_soa["r"][qname])
-                    if logging then logger(log_info, "(l_lookup) TLMC answer exists in records table") end
-                elseif domain_soa["tlmc"]["mode"] == 1 then
-                    if domain_soa["tlmc"]["blacklist"] ~= nil then
-                        res_set = domain_soa["tlmc"]["blacklist"][hostname] == nil
-                        if logging and not(res_set) then logger(log_info, "(l_lookup) TLMC", hostname, "is blacklisted") end
-                    elseif (qname_len - myname_size - 1) == 24 then
-                        local hash_string = qname:sub(1, 24)
-                        --can be a hash request. if it is, it should be all hex values....
-                        --this is a negativ search to figure that out. 
-                        local h = hash_string:match("[g-z%c%p%s]")
-                        if h == nil then
-                            local hash_host_path = qname:sub(1, 16)
-                            local hash_host = qname:sub(17, 24)
-                            --here should be a much better method for looking up the hash value.
-                            --for now on, this is it. this is only used when a request comes
-                            --from a cache server.
-                            res = deepcopy(domain_soa["tlmc"]["hash"])
-                            if logging then logger(log_info, "(l_lookup) TLMC Hash Request. hostpath:", hash_host_path, " host:", hash_host) end
-                        end
+                    if logging then logger(log_info, "(l_lookup) toecdn answer exists in records table") end
+                elseif domain_soa["toecdn"]["mode"] == 1 then
+                    if domain_soa["toecdn"]["blacklist"] ~= nil then
+                        res_set = domain_soa["toecdn"]["blacklist"][hostname] == nil
+                        if logging and not(res_set) then logger(log_info, "(l_lookup) toecdn", hostname, "is blacklisted") end
                     end
+
                     if #res == 0 and res_set then
-                        res = deepcopy(domain_soa["tlmc"]["online"])
-                        if logging then logger(log_info, "(l_lookup) TLMC giveing online answer") end
+                        res = deepcopy(domain_soa["toecdn"]["online"])
+                        if logging then logger(log_info, "(l_lookup) toecdn - online answer") end
                     end
                 else
                     res_set = false
                 end
 
                 if not(res_set) then
-                    res = deepcopy(domain_soa["tlmc"]["offline"])
+                    res = deepcopy(domain_soa["toecdn"]["offline"])
                     res[1]["name"] = qname
-                    res[1]["content"] = domain_soa["tlmc"]["mylocation"] .. "." .. hostname
-                    if logging then logger(log_info, "(l_lookup) TLMC giveing offline answer") end
+                    res[1]["content"] = domain_soa["toecdn"]["mylocation"] .. "." .. hostname
+                    if logging then logger(log_info, "(l_lookup) toecdn - offline answer") end
                 end
             end
          end
@@ -169,11 +156,11 @@ function get()
         local no_more_records = false
 
         while res[counter] ~= nil and res[counter]["type"] == "PREFIX" do
-            if logging then logger(log_info, "(l_get) Got a record for Prefix!") end
+            if logging then logger(log_info, "(l_get) Searching for a Prefix!") end
             local value = res[counter]["prefix"]:find(remote_ip)
 
             if value ~= nil then
-                if logging then logger(log_info, "(l_get) Prefix - Found", #value, "answer...") end
+                if logging then logger(log_info, "(l_get) Prefix - Found", #value, "answer(s)...") end
 
                 result = res[counter]
 
@@ -198,6 +185,7 @@ function get()
 
                 if #value > 1 then
                     --more than one answer....
+                    local k,v
                     for k,v in pairs(value) do 
                         --we have already taking care of the first result so we are skipping that...
                         if k ~= 1 then

@@ -57,7 +57,6 @@ bool LUABackend::domaininfo_from_table(DomainInfo *di) {
     lua_pushlstring(lua, "masters", 7);
     lua_gettable(lua, -2);
 
-    int key;
     if(!lua_isnil(lua, -1)) {
         lua_pushnil(lua);
 
@@ -66,7 +65,7 @@ bool LUABackend::domaininfo_from_table(DomainInfo *di) {
             const char *value = lua_tolstring(lua, -1, &l);
 
             lua_pop(lua,1);
-            key = lua_tonumber(lua, -1); 
+            int key __attribute__((unused)) = lua_tonumber(lua, -1); 
 
             if (value != NULL)
                 di->masters.push_back(std::string(value, l));
@@ -83,7 +82,7 @@ bool LUABackend::domaininfo_from_table(DomainInfo *di) {
 void LUABackend::domains_from_table(vector<DomainInfo>* domains) {
     lua_pushnil(lua);
 
-    int key;
+    
     size_t returnedwhat;
 
     while (lua_next(lua, -2) != 0) {
@@ -96,7 +95,7 @@ void LUABackend::domains_from_table(vector<DomainInfo>* domains) {
         }
 
         lua_pop(lua,1);
-        key = lua_tonumber(lua, -1);
+        int key __attribute__((unused)) = lua_tonumber(lua, -1);
     }
 }
 
