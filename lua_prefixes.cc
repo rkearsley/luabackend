@@ -16,6 +16,12 @@
 */
 
 /*
+
+    Howto compile this as a luamodule:
+
+    g++ -shared -o prefixes.so lua_prefixes.cc -fPIC `pkg-config lua5.1 --libs --cflags`
+
+
     Prefix6 will only hold a prefix with a netmask of 64 or less!
     Prefix4 does not have any restriction regarding the netmask.
 
@@ -29,6 +35,7 @@
 
     Example: Adding the prefix 2001:0db8::/32
 
+    require "prefixes"
     prefix = prefixes.new()
     prefix:add("2001:0db8::", 32, {content = "some kind of value to this record", type = "TXT", ttl = 1234, priority = 112})
     local table_of_values = prefix:find("2001:0db8:1234::5678")
@@ -55,6 +62,13 @@
 
 #include "lua_prefixes.hh"
 #include "lua_getvaluefromtable.hh"
+
+#if !defined s6_addr32 && defined __sun__
+#define s6_addr32 _S6_un._S6_u32
+#elif !defined s6_addr32 && \
+( defined __OpenBSD__ || defined __FreeBSD__ )
+#define s6_addr32 __u6_addr.__u6_addr32
+#endif/* !defined s6_addr32 */
 
 bool LUAPrefixes::logging = false;
 
@@ -168,8 +182,8 @@ int LUAPrefixes::prefixes_add6 (const char *prefix6, LUAPrefixes::MAP_Prefix6 *p
 
     uint64_t prefix6_ntohl = (uint64_t) addr6.s6_addr32[0] << 32 | addr6.s6_addr32[1];
 
-    if (prefix6_ntohl == 0)
-        return 0;
+//    if (prefix6_ntohl == 0)
+//        return 0;
 
     for (uint32_t i = 4; i <= *j; i++) {
         size_t returnedwhat = lua_type(lua, i);
@@ -318,7 +332,8 @@ int LUAPrefixes::prefixes_find6(const char *ip6_address, LUAPrefixes::MAP_Prefix
         if (logging)
             std::cerr << "(lua_prefix_find6) ip6_address: '" << ip6_address << "' ip6: '" << ip6 << "' net6: '" << net6 << "' nm6: '" << nm6 << "'" << std::endl;
 
-        if (net6 > 0 && nm6 > 15 && nm6 < 65) {
+//        if (net6 > 0 && nm6 > 15 && nm6 < 65)
+        if (nm6 > 15 && nm6 < 65) {
             uint64_t netmask6 = (~0ull) << (64 - nm6);
 
             if ((ip6 & netmask6) == (net6 & netmask6)) {

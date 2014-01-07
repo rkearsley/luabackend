@@ -35,6 +35,10 @@ If you are using prefixes then make sure that you don't use of any
 packetcache in PowerDNS at all! Your results will otherwise get
 mixed up with each other.
 
+Howto compile this as a standalone module:
+
+g++ -shared -o prefixes.so lua_prefixes.cc -fPIC `pkg-config lua5.1 --libs --cflags`
+
 
 =================================================
  TOECDN - The Open Edge Content Delivery Network
